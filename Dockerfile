@@ -25,13 +25,15 @@ RUN useradd -d ${PIO_HOME} -ms /bin/bash pio \
 &&  apt-get update -qq -y \
 &&  apt-get install -qq -y --no-install-recommends software-properties-common vim-nox \
 &&  add-apt-repository -y ppa:webupd8team/java \
-&&  echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections \
 &&  apt-get update -qq -y \
-&&  apt-get install -qq -y oracle-java8-installer oracle-java8-set-default oracle-java8-unlimited-jce-policy \
+&&  apt-get install -qq -y openjdk-8-jdk \
 &&  curl -sSL https://downloads.lightbend.com/scala/${SCALA_VERSION}/scala-${SCALA_VERSION}.deb -o /tmp/scala-${SCALA_VERSION}.deb \
 &&  dpkg -i /tmp/scala-${SCALA_VERSION}.deb \
 &&  apt-get install -qq -y -f \
-&&  rm -rf /var/cache/apt/archives/* /var/cache/oracle-jdk8-installer/* /var/lib/apt/lists/* /tmp/* /var/tmp/*
+&&  rm -rf /var/cache/apt/archives/* /var/cache/oracle-jdk8-installer/* /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+&&  ln -s /usr/lib/jvm/java-8-openjdk-amd64 /usr/lib/jvm/java-8-oracle \
+&&  apt-get install python3 python3-pip \
+&&  pip3 install predictionio datetime
 
 # Apache PredictionIO, Spark and JDBC PostgreSQL driver
 RUN curl -sSL https://archive.apache.org/dist/predictionio/${PIO_VERSION}/apache-predictionio-${PIO_VERSION}-bin.tar.gz | tar -xzpf - --strip-components=1 -C ${PIO_HOME} \
@@ -47,6 +49,7 @@ RUN curl -sSL https://piccolo.link/sbt-${SBT_VERSION}.tgz | tar -xzpf - -C ${PIO
 &&  mv -vf ${UR_HOME}/target/scala-${SCALA_MAJOR_VERSION}/*.jar ${APP_HOME}/lib \
 &&  cp -vf ${UR_HOME}/engine.json.template ${APP_HOME}/engine.json \
 &&  cp -vf ${UR_HOME}/template.json ${APP_HOME}/template.json \
+&&  cp -vf ${UR_HOME}/data ${UR_HOME}/examples ${APP_HOME}/ \
 &&  rm -rf ${UR_HOME} ~/.sbt ~/.ivy2/
 
 # pio-env.sh
@@ -56,3 +59,4 @@ RUN chown -R pio:pio ${PIO_HOME}
 WORKDIR ${APP_HOME}
 USER pio
 CMD ["pio"]
+
