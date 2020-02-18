@@ -14,14 +14,13 @@ ENV UNIVERSAL_RECOMMENDER_VERSION v0.7.3
 ENV PIO_HOME /home/pio
 ENV PATH ${PIO_HOME}/bin:$PATH
 ENV UR_HOME ${PIO_HOME}/universal-recommender
-ENV APP_HOME ${PIO_HOME}/app
 ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Add user and install Oracle JDK, Scala
 RUN useradd -d ${PIO_HOME} -ms /bin/bash pio \
-&&  mkdir -p ${PIO_HOME}/vendors ${APP_HOME}/lib ${UR_HOME} \
+&&  mkdir -p ${PIO_HOME}/vendors ${UR_HOME} \
 &&  apt-get update -qq -y \
 &&  apt-get install -qq -y --no-install-recommends software-properties-common vim-nox \
 &&  add-apt-repository -y ppa:webupd8team/java \
@@ -45,15 +44,13 @@ WORKDIR ${UR_HOME}
 
 # Universal Recommender build with sbt and scala
 RUN curl -sSL https://piccolo.link/sbt-${SBT_VERSION}.tgz | tar -xzpf - -C ${PIO_HOME} \
-&&  curl -sSL https://github.com/actionml/universal-recommender/archive/${UNIVERSAL_RECOMMENDER_VERSION}.tar.gz | tar -xzpf - --strip-components=1 -C ${UR_HOME} \
-&&  cp -vf ${UR_HOME}/engine.json.template ${APP_HOME}/engine.json \
-&&  cp -vf ${UR_HOME}/template.json ${APP_HOME}/template.json 
+&&  curl -sSL https://github.com/actionml/universal-recommender/archive/${UNIVERSAL_RECOMMENDER_VERSION}.tar.gz | tar -xzpf - --strip-components=1 -C ${UR_HOME}
 
 # pio-env.sh
 COPY conf/ ${PIO_HOME}/conf/
 RUN chown -R pio:pio ${PIO_HOME}
 
-WORKDIR ${APP_HOME}
+WORKDIR ${UR_HOME}
 USER pio
 CMD ["pio"]
 
