@@ -11,8 +11,10 @@ services:
     - -c
     - 'trap : TERM INT; sleep infinity & wait'
     ports:
-    - 9000:9000
     - 7070:7070
+    - 7071:7071
+    - 8000:8000
+    - 9000:9000
     environment:
       PIO_DB_HOST: postgres
       PIO_DB: pio
@@ -29,4 +31,12 @@ services:
       POSTGRES_DB: pio
 
   elasticsearch:
-    image: inspectorio/elasticsearch-without-xpack
+    image: elasticsearch:5.5.2
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.monitoring.enabled=false
+      - xpack.watcher.enabled=false
+    ports:
+      - 9200:9200
+      - 9300:9300

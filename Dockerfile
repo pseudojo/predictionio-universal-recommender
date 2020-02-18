@@ -32,7 +32,8 @@ RUN useradd -d ${PIO_HOME} -ms /bin/bash pio \
 &&  apt-get install -qq -y -f \
 &&  rm -rf /var/cache/apt/archives/* /var/cache/oracle-jdk8-installer/* /var/lib/apt/lists/* /tmp/* /var/tmp/* \
 &&  ln -s /usr/lib/jvm/java-8-openjdk-amd64 /usr/lib/jvm/java-8-oracle \
-&&  apt-get install python3 python3-pip \
+&&  apt-get update \
+&&  apt-get install -y python3 python3-pip \
 &&  pip3 install predictionio datetime
 
 # Apache PredictionIO, Spark and JDBC PostgreSQL driver
@@ -45,12 +46,8 @@ WORKDIR ${UR_HOME}
 # Universal Recommender build with sbt and scala
 RUN curl -sSL https://piccolo.link/sbt-${SBT_VERSION}.tgz | tar -xzpf - -C ${PIO_HOME} \
 &&  curl -sSL https://github.com/actionml/universal-recommender/archive/${UNIVERSAL_RECOMMENDER_VERSION}.tar.gz | tar -xzpf - --strip-components=1 -C ${UR_HOME} \
-&&  pio build \
-&&  mv -vf ${UR_HOME}/target/scala-${SCALA_MAJOR_VERSION}/*.jar ${APP_HOME}/lib \
 &&  cp -vf ${UR_HOME}/engine.json.template ${APP_HOME}/engine.json \
-&&  cp -vf ${UR_HOME}/template.json ${APP_HOME}/template.json \
-&&  cp -vf ${UR_HOME}/data ${UR_HOME}/examples ${APP_HOME}/ \
-&&  rm -rf ${UR_HOME} ~/.sbt ~/.ivy2/
+&&  cp -vf ${UR_HOME}/template.json ${APP_HOME}/template.json 
 
 # pio-env.sh
 COPY conf/ ${PIO_HOME}/conf/
