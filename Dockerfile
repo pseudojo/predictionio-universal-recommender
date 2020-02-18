@@ -46,9 +46,11 @@ WORKDIR ${UR_HOME}
 RUN curl -sSL https://piccolo.link/sbt-${SBT_VERSION}.tgz | tar -xzpf - -C ${PIO_HOME} \
 &&  curl -sSL https://github.com/actionml/universal-recommender/archive/${UNIVERSAL_RECOMMENDER_VERSION}.tar.gz | tar -xzpf - --strip-components=1 -C ${UR_HOME}
 
-# pio-env.sh
+# copy pio config files and run append-es-uri.sh 
 COPY conf/ ${PIO_HOME}/conf/
-RUN chown -R pio:pio ${PIO_HOME}
+RUN chown -R pio:pio ${PIO_HOME} \
+&&  chmod +x ${PIO_HOME}/conf/append-es-uri.sh \
+&&  ${PIO_HOME}/conf/append-es-uri.sh
 
 WORKDIR ${UR_HOME}
 USER pio

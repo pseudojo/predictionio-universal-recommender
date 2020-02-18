@@ -1,6 +1,6 @@
-## Inspectorio PredictionIO Image
+## Inspectorio PredictionIO Image, modified by hgcho
 
-- Oracle JDK 8
+- OpenJDK 8
 - Scala 2.11.12
 - Apache PredictionIO 0.13.0
 - Apache Spark 2.1.1
