@@ -27,7 +27,7 @@
 $ docker-compose up -d
 
 # open a new terminal and run below command to ssh into pio container
-$ docker-compose exec app sh
+$ docker-compose exec app bash
 
 $ pio status # check pio status
 $ pio eventserver &> ~/eventserver.log &
